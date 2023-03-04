@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+w2XoynE7E4gOc5AglEuYHzioipj+yea3wpBc3+WkzwdEiQa4KLMvOSAG+/hvZnzU4ivjMF19g0IHUnAl5MmRg==",
+  "dgSpecHash": "+A/quZRieaoQs3SvI/3R/BNvzEdJoU/OoiCRsjHq5v6GZIdxRMElK4Hl3nEOOikIe1QhMXbDsj5IKhgJsalTFA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\benli\\source\\repos\\ConsoleApp3\\ConsoleApp3\\LC.csproj",
+  "projectFilePath": "C:\\Users\\benli\\source\\repos\\ConsoleApp3\\LeetCode\\ConsoleApp3\\LC.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

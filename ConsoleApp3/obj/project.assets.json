@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\benli\\source\\repos\\ConsoleApp3\\ConsoleApp3\\LC.csproj",
+      "projectUniqueName": "C:\\Users\\benli\\source\\repos\\ConsoleApp3\\LeetCode\\ConsoleApp3\\LC.csproj",
       "projectName": "LC",
-      "projectPath": "C:\\Users\\benli\\source\\repos\\ConsoleApp3\\ConsoleApp3\\LC.csproj",
+      "projectPath": "C:\\Users\\benli\\source\\repos\\ConsoleApp3\\LeetCode\\ConsoleApp3\\LC.csproj",
       "packagesPath": "C:\\Users\\benli\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\benli\\source\\repos\\ConsoleApp3\\ConsoleApp3\\obj\\",
+      "outputPath": "C:\\Users\\benli\\source\\repos\\ConsoleApp3\\LeetCode\\ConsoleApp3\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\benli\\AppData\\Roaming\\NuGet\\NuGet.Config",
