@@ -1,4 +1,6 @@
 # ignore all logs
 ./obj
 ./bin
+LeetCode/obj
+LeetCode/bin
 .vs
