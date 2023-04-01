@@ -8,6 +8,52 @@ namespace ConsoleApp2
 {
     public class _658FindKClosestElements
     {
+        public IList<int> FindClosestElementsV3(int[] arr, int k, int x)
+        {
+            var res = new List<int>(k);
+            if (arr.Length > k)
+            {
+                int left = 0, right = arr.Length - k;                
+                while (left < right)
+                {
+                    int mid = left + ((right - left) >> 1);
+                    int midK = mid + k;
+                    if (x <= arr[mid])
+                    {
+                        // go left
+                        right = mid;
+                    }
+                    else if (x >= arr[midK])
+                    {
+                        // go right
+                        left = mid + 1;
+                    }
+                    else if (x - arr[mid] <= arr[midK] - x)
+                    {
+                        // x is closer to mid then go left
+                        right = mid;
+                    }
+                    else
+                    {
+                        // x is closer to midK then go right
+                        left = mid + 1;
+                    }
+                }
+
+                // left == right
+                while (res.Count != k)
+                {
+                    res.Add(arr[left++]);
+                }
+            }
+            else
+            {
+                res.AddRange(arr);
+            }
+
+            return res;
+        }
+
         public IList<int> FindClosestElementsV2(int[] arr, int k, int x)
         {
             int left = 0, right = arr.Length - 1;

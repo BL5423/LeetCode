@@ -11,6 +11,26 @@ namespace ConsoleApp2.Level2
         public bool SearchMatrix(int[][] matrix, int target)
         {
             int rows = matrix.Length, cols = matrix[0].Length;
+            if (target < matrix[0][0] || target > matrix[rows - 1][cols - 1])
+                return false;
+
+            int row = rows - 1, col = 0;
+            while (row >= 0 && row < rows && col >= 0 && col < cols)
+            {
+                if (matrix[row][col] == target)
+                    return true;
+                else if (matrix[row][col] > target)
+                    --row;
+                else
+                    ++col;
+            }
+
+            return false;
+        }
+
+        public bool SearchMatrixV2(int[][] matrix, int target)
+        {
+            int rows = matrix.Length, cols = matrix[0].Length;
             int start = 0, end = rows * cols - 1;
             while (start <= end)
             {

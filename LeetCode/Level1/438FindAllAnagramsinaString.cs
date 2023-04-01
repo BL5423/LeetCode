@@ -10,6 +10,53 @@ namespace ConsoleApp2.Level1
     {
         public IList<int> FindAnagrams(string s, string p)
         {
+            var res = new List<int>();
+            if (!string.IsNullOrEmpty(s) && !string.IsNullOrEmpty(p) && p.Length <= s.Length)
+            {
+                int match = 0;
+                int[] p_counters = new int['z' - 'a' + 1];
+                int[] s_counters = new int['z' - 'a' + 1];
+                for(int i = 0; i < p.Length; ++i)
+                {
+                    ++p_counters[p[i] - 'a'];
+                    ++s_counters[s[i] - 'a'];
+                }
+
+                for(int i = 0; i < 26; ++i)
+                {
+                    if (p_counters[i] == s_counters[i])
+                        ++match;
+                }
+
+                if (match == 26)
+                    res.Add(0);
+
+                for (int i = p.Length; i < s.Length; ++i)
+                {
+                    char l = s[i - p.Length], r = s[i];
+
+                    --s_counters[l - 'a'];
+                    if (s_counters[l - 'a'] == p_counters[l - 'a'])
+                        ++match;
+                    else if (s_counters[l - 'a'] == p_counters[l - 'a'] - 1)
+                        --match;
+
+                    ++s_counters[r - 'a'];
+                    if (s_counters[r - 'a'] == p_counters[r - 'a'])
+                        ++match;
+                    else if (s_counters[r - 'a'] == p_counters[r - 'a'] + 1)
+                        --match;
+
+                    if (match == 26)
+                        res.Add(i - p.Length);
+                }
+            }
+
+            return res;
+        }
+
+        public IList<int> FindAnagramsV2(string s, string p)
+        {
             int[] pCounts = new int[26];
             foreach(char ch in p)
             {
