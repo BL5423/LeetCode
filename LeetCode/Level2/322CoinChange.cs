@@ -15,6 +15,40 @@ namespace ConsoleApp2.Level2
             dp[0] = 0;
             for (int value = 1; value <= amount; ++value)
             {
+                dp[value] = int.MaxValue;
+            }
+
+            for (int value = 0; value <= amount; ++value)
+            {
+                for (int index = 0; index < coins.Length; ++index)
+                {
+                    int coin = coins[index];
+                    if (coin <= value)
+                    {
+                        if (dp[value - coin] != int.MaxValue)
+                        {
+                            // the # of coins(including coin) we need to make up for amount value is the minimal of:
+                            // the # of coins(without coin) we need to make up for amount value 
+                            // the # of coins we need to make up for (amount - value of coin) + 1(the coin itself)
+                            if (dp[value] != int.MaxValue)
+                                dp[value] = Math.Min(dp[value - coin] + 1, dp[value]);
+                            else
+                                dp[value] = dp[value - coin] + 1;
+                        }
+                    }
+                }
+            }
+
+            return dp[amount] != int.MaxValue ? dp[amount] : -1;
+        }
+
+        public int CoinChange_DP_1D(int[] coins, int amount)
+        {
+            // dp[a] is the minimal # of coins we need to make up for amount a
+            int[] dp = new int[amount + 1];
+            dp[0] = 0;
+            for (int value = 1; value <= amount; ++value)
+            {
                 dp[value] = -1;
             }
 

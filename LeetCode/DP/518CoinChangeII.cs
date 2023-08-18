@@ -8,9 +8,25 @@ namespace ConsoleApp2.DP
 {
     public class _518CoinChangeII
     {
+        public int Change(int amount, int[] coins)
+        {
+            int[] dp = new int[amount + 1];
+            dp[0] = 1;
+
+            foreach (var coin in coins)
+            {
+                for (int value = coin; value <= amount; ++value)
+                {
+                    dp[value] += dp[value - coin];
+                }
+            }
+
+            return dp[amount];
+        }
+
         //https://leetcode.com/problems/coin-change-ii/discuss/176706/Beginner-Mistake%3A-Why-an-inner-loop-for-coins-doensn't-work-Java-Soln
 
-        public int Change(int amount, int[] coins)
+        public int ChangeV1(int amount, int[] coins)
         {
             int[] dp = new int[amount + 1];
             // amount 0 only has 1 combination(no coin at all)

@@ -6,6 +6,31 @@ namespace ConsoleApp2.Level3
 {
     public class _239SlidingWindowMaximum
     {
+        public int[] MaxSlidingWindow_Queue(int[] nums, int k)
+        {
+            LinkedList<int> decreasingQueue = new LinkedList<int>();
+            int[] res = new int[nums.Length - k + 1];
+            int resIndex = 0;
+            for(int i = 0; i < nums.Length; ++i)
+            {
+                int indexToRemove = i - k;
+                int numToAdd = nums[i];
+                while (decreasingQueue.Count != 0 && decreasingQueue.First() <= indexToRemove)
+                    decreasingQueue.RemoveFirst();
+
+                while (decreasingQueue.Count != 0 && nums[decreasingQueue.Last()] < numToAdd)
+                    decreasingQueue.RemoveLast();
+
+                decreasingQueue.AddLast(i);
+                if (indexToRemove >= -1)
+                {
+                    res[resIndex++] = nums[decreasingQueue.First()];
+                }
+            }
+
+            return res;
+        }
+
         public int[] MaxSlidingWindow_V2(int[] nums, int k)
         {
             LinkedList<int> decreasingQueue = new LinkedList<int>();

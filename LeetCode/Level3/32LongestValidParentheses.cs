@@ -8,6 +8,41 @@ namespace LC.Level3
 {
     public class _32LongestValidParentheses
     {
+        public int LongestValidParentheses(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return 0;
+
+            int maxLength = 0;
+            int[] dp = new int[s.Length];
+            for (int i = 1; i < s.Length; ++i)
+            {
+                dp[i] = 0;
+                if (s[i] == ')')
+                {
+                    if (s[i - 1] == '(')
+                    {
+                        dp[i] = 2 + (i - 2 >= 0 ? dp[i - 2] : 0);
+                    }
+                    else
+                    {
+                        int index = i - dp[i - 1] - 1;
+                        if (index >= 0 && s[index] == '(')
+                        {
+                            dp[i] = dp[i - 1] + 2;
+
+                            if (index - 1 >= 0 && dp[index - 1] != 0)
+                                dp[i] += dp[index - 1];
+                        }
+                    }
+
+                    maxLength = Math.Max(maxLength, dp[i]);
+                }
+            }
+
+            return maxLength;
+        }
+
         public int LongestValidParentheses_Stack(string s)
         {
             int length = 0;
