@@ -8,7 +8,69 @@ namespace ConsoleApp2.DP
 {
     public class _300LongestIncreasingSubsequence
     {
-        public int LengthOfLIS(int[] nums)
+        public int LengthOfLIS_BinarySearch(int[] nums)
+        {
+            int[] dp = new int[nums.Length];
+            int maxLen = 1;
+            dp[0] = nums[0];
+            for(int i = 1; i < nums.Length; ++i)
+            {
+                int left = 0, right = maxLen - 1, index = -1;
+                while (left <= right)
+                {
+                    int mid = left + ((right - left) >> 1);
+                    if (dp[mid] >= nums[i])
+                    {
+                        index = mid;
+                        right = mid - 1;
+                    }
+                    else // dp[mid] < nums[i]
+                    {
+                        left = mid + 1;
+                    }
+                }
+
+                // left > right
+                if (index != - 1)
+                {
+                    // still within the boundary
+                    dp[index] = nums[i];
+                }
+                else
+                {
+                    // nums[i] is the largest num so far and it falls on the right most pos of dp
+                    dp[left] = nums[i];
+                    ++maxLen;
+                }
+            }
+
+            return maxLen;
+        }
+
+        public int LengthOfLIS_DP(int[] nums)
+        {
+            int maxLen = 0;
+            int[] dp = new int[nums.Length];
+            dp[0] = 1;
+            for (int i = 1; i < nums.Length; ++i)
+            {
+                dp[i] = 1;
+                for (int j = i - 1; j >= 0; --j)
+                {
+                    if (nums[i] > nums[j])
+                    {
+                        dp[i] = Math.Max(dp[i], dp[j] + 1);
+                    }
+                }
+
+                if (dp[i] > maxLen)
+                    maxLen = dp[i];
+            }
+
+            return maxLen;
+        }
+
+        public int LengthOfLISV1(int[] nums)
         {
             // result[k] is the # of items < nums[k] in the original nums
             int[] results = new int[nums.Length];

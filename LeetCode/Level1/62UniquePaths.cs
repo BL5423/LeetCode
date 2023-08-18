@@ -10,8 +10,24 @@ namespace ConsoleApp2.Level1
     {
         public int UniquePaths(int m, int n)
         {
+            return (int)Math.Floor(0.5 + Factoria(m + n - 2) / (Factoria(n - 1) * Factoria(m - 1)));
+        }
+
+        private double Factoria(int x)
+        {
+            double f = 1;
+            while (x > 1)
+            {
+                f *= x;
+                --x;
+            }
+            return f;
+        }
+
+        public int UniquePaths_DP(int m, int n)
+        {
             if (m > n)
-                return UniquePaths(n, m);
+                return UniquePaths_DP(n, m);
 
             int[] dpM = new int[m];
             int[] dp = new int[m];
