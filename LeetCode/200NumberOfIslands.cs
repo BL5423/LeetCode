@@ -8,6 +8,42 @@ namespace ConsoleApp2
 {
     public class _200NumberOfIslands
     {
+        public int NumIslands(char[][] grid)
+        {
+            int rows = grid.Length;
+            int cols = grid[0].Length;
+            int islands = rows * cols;
+            var unifiedGroup = new UnifiedGroup(islands);
+            for (int r = 0; r < rows; ++r)
+            {
+                for (int c = 0; c < cols; ++c)
+                {
+                    if (grid[r][c] == '1')
+                    {
+                        int index = r * cols + c;
+                        if (r > 0 && grid[r - 1][c] == '1')
+                        {
+                            // above
+                            if (unifiedGroup.Union(index, index - cols))
+                                --islands;
+                        }
+                        if (c > 0 && grid[r][c - 1] == '1')
+                        {
+                            // left
+                            if (unifiedGroup.Union(index, index - 1))
+                                --islands;
+                        }
+                    }
+                    else
+                    {
+                        --islands;
+                    }
+                }
+            }
+
+            return islands;
+        }
+
         private static int[,] dirs = new int[,] { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
 
         public int NumIsLandsBFS(char[][] grid)
@@ -87,7 +123,7 @@ namespace ConsoleApp2
             return numbers;
         }
 
-        public int NumIslands(char[][] grid)
+        public int NumIslandsV1(char[][] grid)
         {
             int[,] map = new int[grid.Length, grid[0].Length];
             
@@ -176,6 +212,58 @@ namespace ConsoleApp2
             }
 
             return groups.Values.Distinct().Count();
+        }
+    }
+
+
+    public class UnifiedGroup
+    {
+        private int[] ranks, parents;
+
+        public UnifiedGroup(int num)
+        {
+            this.ranks = new int[num];
+            this.parents = new int[num];
+            for (int i = 0; i < num; ++i)
+            {
+                this.ranks[i] = 1;
+                this.parents[i] = i;
+            }
+        }
+
+        public bool Union(int index1, int index2)
+        {
+            int parent1 = this.GetParent(index1);
+            int parent2 = this.GetParent(index2);
+            if (parent1 == parent2)
+                return false;
+
+            if (this.ranks[parent1] > this.ranks[parent2])
+            {
+                this.parents[parent2] = parent1;
+                this.ranks[parent1] += this.ranks[parent2];
+            }
+            else if (this.ranks[parent1] < this.ranks[parent2])
+            {
+                this.parents[parent1] = parent2;
+                this.ranks[parent2] += this.ranks[parent1];
+            }
+            else
+            {
+                this.parents[parent2] = parent1;
+                this.ranks[parent1] += this.ranks[parent2];
+            }
+
+            return true;
+        }
+
+        private int GetParent(int index)
+        {
+            int parent = this.parents[index];
+            if (parent == index)
+                return parent;
+
+            return this.parents[index] = this.GetParent(parent);
         }
     }
 }

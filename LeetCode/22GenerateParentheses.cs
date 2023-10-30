@@ -8,7 +8,78 @@ namespace ConsoleApp2
 {
     public class _22GenerateParentheses
     {
-        public IList<string> GenerateParenthesis(int n)
+        public IList<string> GenerateParenthesisDFS(int n)
+        {
+            var res = new List<string>();
+            Stack<Parenthes> stack = new Stack<Parenthes>();
+            var list = new LinkedList<string>();
+            list.AddLast("(");
+            stack.Push(new Parenthes() { processedTimes = 0, leftParenthesToMatch = 1});
+            while (stack.Count != 0)
+            {
+                var parenthes = stack.Peek();
+                if (list.Count > n * 2 || parenthes.leftParenthesToMatch < 0 || parenthes.leftParenthesToMatch > n)
+                {
+                    list.RemoveLast();
+                    stack.Pop();
+                }
+                else if (list.Count == n * 2 && parenthes.leftParenthesToMatch == 0)
+                {
+                    res.Add(string.Join("", list.ToList()));
+
+                    list.RemoveLast();
+                    stack.Pop();
+                }
+                else
+                {
+                    ++parenthes.processedTimes;
+                    if (parenthes.processedTimes == 1)
+                    {
+                        // process left branch
+                        list.AddLast("(");
+                        stack.Push(new Parenthes() { processedTimes = 0, leftParenthesToMatch = parenthes.leftParenthesToMatch + 1 });
+                    }
+                    else if (parenthes.processedTimes == 2)
+                    {
+                        // process right branch
+                        list.AddLast(")");
+                        stack.Push(new Parenthes() { processedTimes = 0, leftParenthesToMatch = parenthes.leftParenthesToMatch - 1 });
+                    }
+                    else
+                    {
+                        // we have done processing the item on stack's top
+                        list.RemoveLast();
+                        stack.Pop();
+                    }
+                }
+            }
+
+            return res;
+        }
+
+        public IList<string> GenerateParenthesisBFS(int n)
+        {
+            var res = new List<string>();
+            Queue<(string, int)> queue = new Queue<(string, int)>();
+            queue.Enqueue(("(", 1));
+            while (queue.Count != 0)
+            {
+                var item = queue.Dequeue();
+                if (item.Item1.Length == n * 2 && item.Item2 == 0)
+                {
+                    res.Add(item.Item1);
+                }
+                else if (item.Item2 >= 0 && item.Item1.Length + item.Item2 <= n * 2)
+                {
+                    queue.Enqueue((string.Concat(item.Item1, "("), item.Item2 + 1));
+                    queue.Enqueue((string.Concat(item.Item1, ")"), item.Item2 - 1));
+                }
+            }
+
+            return res;
+        }
+
+        public IList<string> GenerateParenthesisV1(int n)
         {
             var parentTheses = new HashSet<string>();
             if (n < 1)
@@ -44,6 +115,12 @@ namespace ConsoleApp2
         }
     }
 
+    public class Parenthes
+    {
+        public int processedTimes = 0;
+
+        public int leftParenthesToMatch = 0;
+    }
 
     public class _22GenerateParenthesesV2
     {

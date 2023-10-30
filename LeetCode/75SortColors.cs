@@ -10,6 +10,69 @@ namespace ConsoleApp2
     {
         public void SortColors(int[] nums)
         {
+            int left = -1, right = nums.Length;
+            int index = 0;
+            while (index < right)
+            {
+                if (nums[index] == 1)
+                {
+                    ++index;
+                }
+                else if (nums[index] == 2)
+                {
+                    int temp = nums[right - 1];
+                    nums[right - 1] = nums[index];
+                    nums[index] = temp;
+
+                    --right;
+                }
+                else // nums[index] == 0
+                {
+                    int temp = nums[left + 1];
+                    nums[left + 1] = nums[index];
+                    nums[index] = temp;
+
+                    if (++left == index)
+                        ++index;
+                }
+            }
+        }
+
+        public void SortColorsV3(int[] nums)
+        {
+            // move all '0' to the left sub-array
+            int left = this.Move(nums, -1, 0);
+
+            // move all '1' to the left sub-array
+            this.Move(nums, left, 1);
+        }
+
+        private int Move(int[] nums, int left, int target)
+        {
+            // move all targets to the left sub-array
+            int right = left + 1;
+            while (right < nums.Length)
+            {
+                if (nums[right] == target)
+                {
+                    int temp = nums[left + 1];
+                    nums[left + 1] = nums[right];
+                    nums[right] = temp;
+
+                    if (++left == right)
+                        ++right;
+                }
+                else
+                {
+                    ++right;
+                }
+            }
+
+            return left;
+        }
+
+        public void SortColorsV2(int[] nums)
+        {
             int[] counts = new int[] { 0, 0, 0 };
             foreach (int num in nums)
             {
@@ -33,11 +96,11 @@ namespace ConsoleApp2
             }
         }
 
-        public void SortColorsV2(int[] nums)
+        public void SortColorsV1(int[] nums)
         {
-            // start is the last index of 0's
+            // start is the prev index of the latest 0 from the beginning
             // middle is the last index of 1's
-            // end is the lat index of 2's
+            // end is the prior index of the latest 2 from the end
             int start = 0, middle = 0, end = nums.Length - 1;
             while(middle <= end)
             {

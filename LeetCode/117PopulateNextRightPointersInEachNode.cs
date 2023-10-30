@@ -34,6 +34,51 @@ namespace ConsoleApp117
     {
         public Node Connect(Node root)
         {
+            if (root != null)
+            {
+                Stack<Node> stack = new Stack<Node>();
+                stack.Push(root);
+                while (stack.Count != 0)
+                {
+                    var node = stack.Pop();
+
+                    var child = node.left;
+                    if (node.left != null)
+                        child.next = node.right;
+                    if (node.right != null)
+                        child = node.right;
+
+                    if (child != null)
+                    {
+                        var next = node.next;
+                        while (next != null)
+                        {
+                            if (next.left != null)
+                            {
+                                child.next = next.left;
+                                break;
+                            }
+                            if (next.right != null)
+                            {
+                                child.next = next.right;
+                                break;
+                            }
+                            next = next.next;
+                        }
+                    }
+
+                    if (node.right != null)
+                        stack.Push(node.right);
+                    if (node.left != null)
+                        stack.Push(node.left);
+                }
+            }
+
+            return root;
+        }
+
+        public Node ConnectV3(Node root)
+        {
             Node leftMost = root;
             while (leftMost != null)
             {

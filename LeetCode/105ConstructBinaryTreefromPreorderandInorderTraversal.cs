@@ -60,7 +60,7 @@ namespace ConsoleApp2
                     stack.Push(curNode);
                     curNode = child;
                 }
-                else // inorder[inorderIndex] == curNode.val
+                else // inorder[inorderIndex] == curNode.val, which means we have done setup of left branch for curNode
                 {
                     // move to next node in inorder
                     ++inorderIndex;

@@ -6,8 +6,100 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp2
 {
+    public class _Status
+    {
+        public int index;
+    }
+
     public class _17LetterCombinationsOfAPhoneNumber
     {
+        public IList<string> LetterCombinations(string digits)
+        {
+            var res = new LinkedList<string>();
+            if (!string.IsNullOrEmpty(digits))
+            {
+                res.AddLast(string.Empty);
+                foreach (var num in digits)
+                {
+                    var chars = this.GetCharactersPerDigit(num);
+                    var list = new LinkedList<string>();
+                    foreach (var str in res)
+                    {
+                        foreach (var ch in chars)
+                        {
+                            list.AddLast(string.Concat(str, ch));
+                        }
+                    }
+
+                    res = list;
+                }
+            }
+
+            return res.ToList();
+        }
+
+        public IList<string> LetterCombinationsDFS(string digits)
+        {
+            var res = new List<string>();
+            if (!string.IsNullOrEmpty(digits))
+            {
+                Stack<(int, _Status)> stack = new Stack<(int, _Status)>();
+                stack.Push((0, new _Status()));
+                var list = new LinkedList<char>();
+                while (stack.Count != 0)
+                {
+                    var item = stack.Peek();
+                    if (item.Item1 == digits.Length)
+                    {
+                        res.Add(string.Join("", list.ToList()));
+                        stack.Pop();
+                        list.RemoveLast();
+                        continue;
+                    }
+
+                    var chars = this.GetCharsPerDigit(digits[item.Item1]);
+                    if (item.Item2.index < chars.Length)
+                    {
+                        list.AddLast(chars[item.Item2.index++]);
+                        stack.Push((item.Item1 + 1, new _Status()));
+                    }
+                    else
+                    {
+                        stack.Pop();
+                        if (list.Count != 0)
+                            list.RemoveLast(); // remove the last char added by stack.Top since we'll iterate on the next char of it
+                    }
+                }
+            }
+
+            return res;
+        }
+
+        private char[] GetCharsPerDigit(char digit)
+        {
+            switch (digit)
+            {
+                case '2':
+                    return new char[] { 'a', 'b', 'c' };
+                case '3':
+                    return new char[] { 'd', 'e', 'f' };
+                case '4':
+                    return new char[] { 'g', 'h', 'i' };
+                case '5':
+                    return new char[] { 'j', 'k', 'l' };
+                case '6':
+                    return new char[] { 'm', 'n', 'o' };
+                case '7':
+                    return new char[] { 'p', 'q', 'r', 's' };
+                case '8':
+                    return new char[] { 't', 'u', 'v' };
+                case '9':
+                    return new char[] { 'w', 'x', 'y', 'z' };
+            }
+
+            return null;
+        }
+
         public IList<string> LetterCombinationsV2(string digits)
         {
             var res = new List<string>();

@@ -12,6 +12,53 @@ namespace LC.Level3
 
         public bool Exist(char[][] board, string word)
         {
+            for (int row = 0; row < board.Length; ++row)
+            {
+                for (int col = 0; col < board[row].Length; ++col)
+                {
+                    if (board[row][col] == word[0] && BFS(board, row, col, word))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool BFS(char[][] board, int row, int col, string word)
+        {
+            Queue<(Status, HashSet<(int, int)>)> queue = new Queue<(Status, HashSet<(int, int)>)>();
+            var orignalPath = new HashSet<(int, int)>();
+            orignalPath.Add((row, col));
+            queue.Enqueue((new Status(row, col, 0, 0), orignalPath));
+            while (queue.Count != 0)
+            {
+                var (status, path) = queue.Dequeue();
+                if (status.strIndex == word.Length - 1)
+                    return true;
+
+                for (int i = 0; i < directions.GetLength(0); ++i)
+                {
+                    int nextRow = status.row + directions[i, 0];
+                    int nextCol = status.col + directions[i, 1];
+                    if (nextRow < 0 || nextRow >= board.Length ||
+                        nextCol < 0 || nextCol >= board[nextRow].Length ||
+                        word[status.strIndex + 1] != board[nextRow][nextCol] ||
+                        path.Contains((nextRow, nextCol)))
+                        continue;
+
+                    var newPath = new HashSet<(int, int)>(path);
+                    newPath.Add((nextRow, nextCol));
+                    queue.Enqueue((new Status(nextRow, nextCol, status.strIndex + 1, 0), newPath));
+                }
+            }
+
+            return false;
+        }
+
+        public bool ExistDFS(char[][] board, string word)
+        {
             for(int row = 0; row < board.Length; row++)
             {
                 for(int col = 0; col < board[row].Length; col++)

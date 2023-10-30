@@ -6,9 +6,96 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp2
 {
+    public class State
+    {
+        public int times;
+
+        public int index;
+
+        public State(int times, int index)
+        {
+            this.times = times;
+            this.index = index;
+        }
+    }
+
     public class _78Subsets
     {
         public IList<IList<int>> Subsets(int[] nums)
+        {
+            var res = new List<IList<int>>();
+            var list = new LinkedList<int>();
+            Stack<State> stack = new Stack<State>();
+            do
+            {
+                State item;
+                if (stack.Count != 0)
+                {
+                    item = stack.Peek();
+                }
+                else
+                {
+                    item = new State(0, -1);
+                }
+
+                ++item.times;
+                if (item.times == 1)
+                {
+                    // first time, do not add
+                    // move to next num
+                    if (item.index + 1 < nums.Length)
+                        stack.Push(new State(0, item.index + 1));
+                }
+                else if (item.times == 2)
+                {
+                    // second time, add
+                    list.AddLast(nums[item.index]);
+
+                    // move to next num
+                    if (item.index + 1 < nums.Length)
+                        stack.Push(new State(0, item.index + 1));
+                }
+                else
+                {
+                    // last time, remove
+                    list.RemoveLast();
+                    stack.Pop();
+                    continue;
+                }
+
+                if (item.index == nums.Length - 1)
+                {
+                    res.Add(list.ToList());
+                }
+            }
+            while (stack.Count != 0);
+
+            return res;
+        }
+
+        public IList<IList<int>> SubsetsBFS(int[] nums)
+        {
+            var res = new List<IList<int>>();
+
+            // BFS
+            var queue = new Queue<(int, LinkedList<int>)>();
+            queue.Enqueue((-1, new LinkedList<int>()));
+            while (queue.Count != 0)
+            {
+                var item = queue.Dequeue();
+                res.Add(item.Item2.ToList());
+                for (int i = item.Item1 + 1; i < nums.Length; ++i)
+                {
+                    var list = new LinkedList<int>(item.Item2);
+                    list.AddLast(nums[i]);
+                    queue.Enqueue((i, list));
+                }
+            }
+
+            return res;
+        }
+
+        public IList<IList<int>> SubsetsBits(int[] nums)
         {
             var res = new List<IList<int>>();
             int n = nums.Length;
