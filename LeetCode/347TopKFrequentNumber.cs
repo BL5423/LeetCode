@@ -8,7 +8,103 @@ namespace ConsoleApp2
 {
     public class _347TopKFrequentNumber
     {
-        public int[] TopKFrequent(int[] nums, int k)
+        public int[] TopKFrequentQuickSort(int[] nums, int k)
+        {
+            var counters = new Dictionary<int, int>(nums.Length);
+            foreach (var num in nums)
+            {
+                if (!counters.ContainsKey(num))
+                {
+                    counters.Add(num, 0);
+                }
+
+                ++counters[num];
+            }
+
+            int[] uniqueNums = new int[counters.Count];
+            int index = 0;
+            foreach (var pair in counters)
+            {
+                uniqueNums[index++] = pair.Key;
+            }
+
+            int left = 0, right = uniqueNums.Length - 1;
+            int targetIndex = uniqueNums.Length - k;
+            int pivotIndex = -1;
+            while (true)
+            {
+                // always choose the right most num as the pivot
+                pivotIndex = right;
+
+                // randomly choose a pivot num
+                //pivotIndex = left + (int)(Random.Shared.NextDouble() * (right - left));
+                //int t = uniqueNums[pivotIndex];
+                //uniqueNums[pivotIndex] = uniqueNums[right];
+                //uniqueNums[right] = t;
+                //pivotIndex = right;
+
+                int prevIndex = left;
+                for (int i = left; i < right; ++i)
+                {
+                    if (counters[uniqueNums[i]] < counters[uniqueNums[pivotIndex]])
+                    {
+                        // swap
+                        int temp = uniqueNums[prevIndex];
+                        uniqueNums[prevIndex] = uniqueNums[i];
+                        uniqueNums[i] = temp;
+                        ++prevIndex;
+                    }
+                }
+
+                int t = uniqueNums[prevIndex];
+                uniqueNums[prevIndex] = uniqueNums[pivotIndex];
+                uniqueNums[pivotIndex] = t;
+                pivotIndex = prevIndex;
+
+                if (pivotIndex == targetIndex)
+                    break;
+                else if (pivotIndex > targetIndex)
+                    right = pivotIndex - 1;
+                else // pivotIndex < targetIndex
+                    left = pivotIndex + 1;
+            }
+
+            int[] res = new int[k];
+            for (int i = pivotIndex; i < uniqueNums.Length; ++i)
+                res[i - pivotIndex] = uniqueNums[i];
+
+            return res;
+        }
+
+        public int[] TopKFrequentPriorityQueue(int[] nums, int k)
+        {
+            Dictionary<int, int> counters = new Dictionary<int, int>(nums.Length);
+            foreach(var num in nums)
+            {
+                if (!counters.TryGetValue(num, out int count))
+                {
+                    counters[num] = 0;
+                }
+
+                ++counters[num];
+            }
+
+            int[] res = new int[k];
+            PriorityQueue<int, int> heap = new PriorityQueue<int, int>();
+            foreach(var pair in counters)
+            {
+                heap.Enqueue(pair.Key, pair.Value);
+            }
+
+            for(int i = 0; i < k; ++i)
+            {
+                res[i] = heap.Dequeue();
+            }
+
+            return res;
+        }
+
+        public int[] TopKFrequentV2(int[] nums, int k)
         {
             int maxFrequency = 0;
             Dictionary<int, int> numsToFrequency = new Dictionary<int, int>();

@@ -6,9 +6,76 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp2
 {
+    public class Index
+    {
+        public int val;
+
+        public bool seen = false;
+
+        public int depth = 0;
+
+        public int changes = 0;
+    }
+
     public class _46Permutations
     {
-        public IList<IList<int>> Permute(int[] nums)
+        public IList<IList<int>> PermuteDFS(int[] nums)
+        {
+            HashSet<int> indicesInStack = new HashSet<int>();
+            var res = new List<IList<int>>();
+                Stack<Index> stack = new Stack<Index>();
+                stack.Push(new Index() { val = 0, depth = 1 });
+                indicesInStack.Add(0);
+            while (stack.Count != 0)
+            {
+                Index index = stack.Peek();
+                if (indicesInStack.Count == nums.Length)
+                {
+                    res.Add(indicesInStack.Select(v => nums[v]).ToList());
+
+                    var removedIndex = stack.Pop();
+                    indicesInStack.Remove(removedIndex.val);
+                }
+                else
+                {
+                    if (index.seen)
+                    {                        
+                        if (index.changes + index.depth == nums.Length)
+                        {
+                            var removedIndex = stack.Pop();
+                            indicesInStack.Remove(removedIndex.val);
+                            continue;
+                        }
+                        else
+                        {
+                            ++index.changes;
+                            int nextIndex = index.val;
+                            while (nextIndex < nums.Length && indicesInStack.Contains(nextIndex))
+                                ++nextIndex;
+
+                            indicesInStack.Remove(index.val);
+                            index.val = nextIndex;
+                            indicesInStack.Add(index.val);
+                        }
+                    }
+
+                    index.seen = true;
+                    for (int j = 0; j < nums.Length; ++j)
+                    {
+                        if (indicesInStack.Contains(j))
+                            continue;
+
+                        indicesInStack.Add(j);
+                        stack.Push(new Index() { val = j, depth = index.depth + 1 });
+                        break;
+                    }
+                }
+            }
+
+            return res;
+        }
+
+        public IList<IList<int>> PermuteBFS(int[] nums)
         {
             Queue<HashSet<int>> queue = new Queue<HashSet<int>>();
             for(int index = 0; index < nums.Length; ++index)

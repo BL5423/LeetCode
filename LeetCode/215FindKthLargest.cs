@@ -8,6 +8,77 @@ namespace ConsoleApp2
 {
     public class _215FindKthLargest
     {
+        public int FindKthLargestCountSorting(int[] nums, int k)
+        {
+            int max = int.MinValue, min = int.MaxValue;
+            var counters = new Dictionary<int, int>(nums.Length);
+            foreach (var num in nums)
+            {
+                if (max < num)
+                    max = num;
+                if (min > num)
+                    min = num;
+
+                if (!counters.ContainsKey(num))
+                {
+                    counters.Add(num, 0);
+                }
+
+                ++counters[num];
+            }
+
+            int[] sortedNums = new int[max - min + 1];
+            foreach (var pair in counters)
+            {
+                sortedNums[pair.Key - min] += pair.Value;
+            }
+
+            for (int i = max; i >= min; --i)
+            {
+                k -= sortedNums[i - min];
+                if (k <= 0)
+                    return i;
+            }
+
+            return int.MinValue;
+        }
+
+        public int FindKthLargestQuickSelect(int[] nums, int k)
+        {
+            int targetIndex = nums.Length - k;
+            int left = 0, right = nums.Length - 1;
+            while (true)
+            {
+                // always use the right most num as pivot
+                // int pivotIndex = right;
+
+                // randomly choose pivot
+                int pivotIndex = left + (int)(Random.Shared.NextDouble() * (right - left + 1));
+                this.Swap(nums, right, pivotIndex);
+                pivotIndex = right;
+
+                int start = left, end = right;
+                for (int i = start; i < end; ++i)
+                {
+                    if (nums[i] <= nums[pivotIndex])
+                    {
+                        this.Swap(nums, i, start++);
+                    }
+                }
+
+                this.Swap(nums, start, pivotIndex);
+                pivotIndex = start;
+                if (pivotIndex == targetIndex)
+                    return nums[pivotIndex];
+                else if (pivotIndex < targetIndex)
+                    left = pivotIndex + 1;
+                else // pivotIndex > targetIndex
+                    right = pivotIndex - 1;
+            }
+
+            return -1;
+        }
+
         public int FindKthLargest(int[] nums, int k)
         {
             int pivotIndex = -1, start = 0, end = nums.Length - 1;
