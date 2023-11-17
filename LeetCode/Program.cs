@@ -14,7 +14,11 @@ namespace MyApp // Note: actual namespace depends on the project name.
     {
         static void Main(string[] args)
         {
-            new _162FindPeakElement().FindPeakElement(new int[] { 3, 1, 2 });
+            var intervals = new int[3][];
+            intervals[0] = new int[] { 0, 30 };
+            intervals[1] = new int[] { 60, 240 };
+            intervals[2] = new int[] { 90, 120 };
+            new MergeIntervals().CanAttendMeetings(intervals);
         }
     }
 }

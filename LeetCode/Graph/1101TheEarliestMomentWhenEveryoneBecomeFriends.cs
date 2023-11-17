@@ -21,7 +21,6 @@ namespace ConsoleApp2.Graph
             while (minHeap.Size() != 0)
             {
                 var log = minHeap.Pop().log;
-                Console.WriteLine(log[0]);
                 if (dju.Union(log[1], log[2]))
                 {
                     ++connected;

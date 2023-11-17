@@ -8,7 +8,49 @@ namespace LC.Top100Liked
 {
     public class _240Searcha2DMatrixII
     {
-        public bool SearchMatrix(int[][] matrix, int target)
+        public bool SearchMatrix_SearchDiagonals(int[][] matrix, int target)
+        {
+            int shortDim = Math.Min(matrix.Length - 1, matrix[0].Length - 1);
+            for(int dim = 0; dim < shortDim; dim++)
+            {
+                if (Search(matrix, target, dim, vertical: true) || Search(matrix, target, dim, vertical: false))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool Search(int[][] matrix, int target, int startIndex, bool vertical)
+        {
+            int start = startIndex + (vertical ? 1 : 0);
+            int end = vertical ? (matrix.Length - 1) : (matrix[0].Length - 1);
+            while (start <= end)
+            {
+                int mid = start + ((end - start) >> 1);
+                if (vertical)
+                {
+                    if (matrix[mid][startIndex] == target)
+                        return true;
+                    else if (matrix[mid][startIndex] < target)
+                        start = mid + 1;
+                    else
+                        end = mid - 1;
+                }
+                else
+                {
+                    if (matrix[startIndex][mid] == target)
+                        return true;
+                    else if (matrix[startIndex][mid] < target)
+                        start = mid + 1;
+                    else
+                        end = mid - 1;
+                }
+            }
+
+            return false;
+        }
+
+        public bool SearchMatrix_ReduceSearchSpace(int[][] matrix, int target)
         {
             int row = matrix.Length - 1, col = 0;
             while(row >= 0 && row < matrix.Length && col >= 0 && col < matrix[0].Length)

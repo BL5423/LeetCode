@@ -116,11 +116,177 @@ namespace ConsoleApp2
         }
     }
 
+    public class IntervalNodeV3
+    {
+        private int start, end, middle;
+
+        private IntervalNodeV3 left, right;
+
+        public IntervalNodeV3(int[] intervals)
+        {
+            this.start = intervals[0];
+            this.end = intervals[1];
+            this.middle = this.start + ((this.end - this.start) >> 1);
+        }
+
+        public static IntervalNodeV3 Merge(int[][] intervals)
+        {
+            IntervalNodeV3 node = null;
+            if (intervals != null && intervals.Length > 0)
+            {
+                node = new IntervalNodeV3(intervals[0]);
+                for (int i = 1; i < intervals.Length; ++i)
+                {
+                    if (!node.Insert(intervals[i]))
+                        return null;
+                }
+            }
+
+            return node;
+        }
+
+        private bool Insert(int[] interval)
+        {
+            if (interval != null)
+            {
+                if (interval[0] >= this.middle)
+                {
+                    if (this.right != null)
+                    {
+                        return this.right.Insert(interval);
+                    }
+                    else
+                    {
+                        this.right = new IntervalNodeV3(interval);
+                    }
+                }
+                else if (interval[1] <= this.middle)
+                {
+                    if (this.left != null)
+                    {
+                        return this.left.Insert(interval);
+                    }
+                    else
+                    {
+                        this.left = new IntervalNodeV3(interval);
+                    }
+                }
+                else
+                {
+                    this.start = Math.Min(this.start, interval[0]);
+                    this.end = Math.Max(this.end, interval[1]);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public List<int[]> Query()
+        {
+            bool insertNode = false;
+            var res = new List<int[]>();
+
+            if (this.left != null)
+            {
+                var leftIntervals = this.left.Query();
+                foreach (var leftInterval in leftIntervals)
+                {
+                    if (leftInterval[1] <= this.start)
+                    {
+                        res.Add(leftInterval);
+                    }
+                    else
+                    {
+                        insertNode = true;
+                        res.Add(new int[] { Math.Min(leftInterval[0], this.start), this.end });
+                        break;
+                    }
+                }
+            }
+
+            if (!insertNode)
+            {
+                res.Add(new int[] { this.start, this.end });
+            }
+
+            if (this.right != null)
+            {
+                var rightIntervals = this.right.Query();
+                foreach (var rightInterval in rightIntervals)
+                {
+                    if (rightInterval[0] >= this.end)
+                    {
+                        res.Add(rightInterval);
+                    }
+                    else
+                    {
+                        this.end = res.Last()[1] = Math.Max(this.end, rightInterval[1]);
+                    }
+                }
+            }
+
+            return res;
+        }
+    }
+
+
     public class MergeIntervals
     {
+
         public int[][] Merge(int[][] intervals)
         {
+            int firstIndex = int.MaxValue, lastIndex = int.MinValue;
+            int[] range = new int[10002];
+            foreach (var interval in intervals)
+            {
+                range[interval[0] + 1] = Math.Max(range[interval[0] + 1], interval[1] + 1);
+
+                if (interval[0] + 1 < firstIndex)
+                    firstIndex = interval[0] + 1;
+                if (interval[1] + 1 > lastIndex)
+                    lastIndex = interval[1] + 1;
+            }
+
+            int index = firstIndex;
+            var list = new List<int[]>();
+            while (index <= lastIndex)
+            {
+                if (range[index] == 0)
+                {
+                    ++index;
+                    continue;
+                }
+
+                int nextIndex = range[index];
+                for (int i = index; i <= nextIndex; ++i)
+                {
+                    if (range[i] > nextIndex)
+                        nextIndex = range[i];
+                }
+
+                list.Add(new int[] { index - 1, nextIndex - 1 });
+                index = nextIndex + 1;
+            }
+
+            return list.ToArray();
+        }
+
+        public int[][] MergeV2(int[][] intervals)
+        {
             return IntervalNodeV2.Merge(intervals);
+        }
+
+        public bool CanAttendMeetings(int[][] intervals)
+        {
+            if (intervals == null || intervals.Length <= 1)
+                return true;
+
+            var intervalNode = IntervalNodeV3.Merge(intervals);
+            if (intervalNode == null)
+                return false;
+            var mergedIntervals = intervalNode.Query();
+            return mergedIntervals != null && mergedIntervals.Count == intervals.Length;
         }
 
         public int[][] Merge_Sort(int[][] intervals)
