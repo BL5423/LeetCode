@@ -8,7 +8,80 @@ namespace ConsoleApp2
 {
     public class _166FractionToRecurringDecimal
     {
-        public string FractionToDecimal(long numerator, long denominator)
+        // converting numerator to long so that it won't overflow int.MinValue especially
+        public string FractionToDecimal(long numerator, int denominator)
+        {
+            if (numerator == 0)
+                return "0";
+
+            int negatives = 2;
+            if (numerator >= 0)
+            {
+                --negatives;
+                numerator = -numerator;
+            }
+            if (denominator >= 0)
+            {
+                --negatives;
+                denominator = -denominator;
+            }
+
+            LinkedList<string> list = new LinkedList<string>();
+            if (numerator <= denominator)
+            {
+                list.AddLast((numerator / denominator).ToString());
+                numerator %= denominator;
+            }
+
+            Dictionary<long, LinkedListNode<string>> seen = new Dictionary<long, LinkedListNode<string>>();
+            if (numerator != 0)
+            {
+                if (list.Count != 0)
+                    list.AddLast(".");
+                else
+                    list.AddLast("0.");
+
+                seen.Add(numerator, list.Last);
+            }
+
+            // numerator is less than denominator since here
+            while (numerator != 0)
+            {
+                // if numerator is not long, operation below would overflow
+                numerator *= 10;
+
+                if (numerator > denominator)
+                {
+                    list.AddLast("0");
+                }
+                else
+                {
+                    long m = numerator / denominator;
+                    list.AddLast(m.ToString());
+                    numerator %= denominator;
+
+                    if (seen.TryGetValue(numerator, out LinkedListNode<string> node))
+                    {
+                        list.AddAfter(node, new LinkedListNode<string>("("));
+                        list.AddLast(")");
+                        break;
+                    }
+                    else
+                    {
+                        seen.Add(numerator, list.Last);
+                    }
+                }
+            }
+
+            if (negatives == 1)
+            {
+                list.AddFirst("-");
+            }
+
+            return string.Join(string.Empty, list);
+        }
+
+        public string FractionToDecimalV1(long numerator, long denominator)
         {
             int signOfNumerator = numerator > 0 ? 1 : -1;
             int signOfDenominator = denominator > 0 ? 1 : -1;

@@ -10,6 +10,48 @@ namespace LC.Level3
     {
         public int Calculate(string s)
         {
+            s += "@";
+            Stack<int> nums = new Stack<int>();
+            Stack<char> ops = new Stack<char>();
+            int curNum = 0, lastRes = 0;
+            char curOp = '+';
+            for (int index = 0; index < s.Length; ++index)
+            {
+                char c = s[index];
+                if (c >= '0' && c <= '9')
+                {
+                    curNum *= 10;
+                    curNum += c - '0';
+                }
+                else if (c != ' ')
+                {
+                    lastRes += curNum * (curOp == '+' ? 1 : -1);
+                    curNum = 0;
+
+                    if (c == '+' || c == '-')
+                    {
+                        curOp = c;
+                    }
+                    else if (c == '(')
+                    {
+                        ops.Push(curOp);
+                        curOp = '+';
+                        nums.Push(lastRes);
+                        lastRes = 0;
+                    }
+                    else if (c == ')')
+                    {
+                        lastRes *= (ops.Pop() == '+' ? 1 : -1);
+                        lastRes = nums.Pop() + lastRes; // merge
+                    }
+                }
+            }
+
+            return lastRes;
+        }
+
+        public int CalculateV1(string s)
+        {
             int curNum = 0;
             var stack = new Stack<object>(s.Length);
             foreach(var ch in s)

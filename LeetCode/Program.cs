@@ -1,11 +1,14 @@
 ﻿using ConsoleApp117;
 using ConsoleApp2;
+using ConsoleApp2.Level2;
 using ConsoleApp2.Level3;
 using LC;
 using LC.DP;
 using LC.Level3;
+using LC.SegmentTree;
 using LC.Top100Medium;
 using System;
+using System.Text;
 using TreeNode = ConsoleApp2.TreeNode;
 
 namespace MyApp // Note: actual namespace depends on the project name.
@@ -14,11 +17,9 @@ namespace MyApp // Note: actual namespace depends on the project name.
     {
         static void Main(string[] args)
         {
-            var intervals = new int[3][];
-            intervals[0] = new int[] { 0, 30 };
-            intervals[1] = new int[] { 60, 240 };
-            intervals[2] = new int[] { 90, 120 };
-            new MergeIntervals().CanAttendMeetings(intervals);
+            Console.WriteLine(new _621TaskScheduler().LeastInterval(new[] { 'A', 'A', 'A', 'B', 'B', 'B' }, 2));
+            Console.WriteLine(new _621TaskScheduler().LeastInterval(new[] { 'A', 'A', 'A', 'B', 'B', 'B' }, 0));
+            Console.WriteLine(new _621TaskScheduler().LeastInterval(new[] { 'A', 'A', 'A', 'A', 'A', 'A', 'B', 'C', 'D', 'E', 'F', 'G' }, 2));
         }
     }
 }

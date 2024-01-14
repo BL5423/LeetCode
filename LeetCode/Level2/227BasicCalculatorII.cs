@@ -10,6 +10,56 @@ namespace ConsoleApp2.Level2
     {
         public int Calculate(string s)
         {
+            int lastNum = 0, curNum = 0;
+            int curSign = 1;
+            s += '+';
+            int index = 0;
+            while (index < s.Length)
+            {
+                char ch = s[index];
+                if (ch >= '0' && ch <= '9')
+                {
+                    curNum *= 10;
+                    curNum += ch - '0';
+                }
+                else
+                {
+                    if (ch != ' ')
+                    {
+                        if (ch == '+' || ch == '-')
+                        {
+                            lastNum += curNum * curSign;
+                            curNum = 0; // reset
+                            curSign = (ch == '+' ? 1 : -1);
+                        }
+                        else // ch == '*' or '/'
+                        {
+                            ++index;
+                            int nextNum = 0;
+                            while (s[index] == ' ')
+                                ++index;
+
+                            while (s[index] >= '0' && s[index] <= '9')
+                            {
+                                nextNum *= 10;
+                                nextNum += s[index] - '0';
+                                ++index;
+                            }
+
+                            curNum = (ch == '*' ? curNum * nextNum : curNum / nextNum);
+                            --index;
+                        }
+                    }
+                }
+
+                ++index;
+            }
+
+            return lastNum;
+        }
+
+        public int CalculateV3(string s)
+        {
             char lastOperator = '+';
             int val = 0, finalVal = 0;
             int? prevVal = null;
