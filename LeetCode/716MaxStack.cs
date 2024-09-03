@@ -7,6 +7,61 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp2
 {
+    public class NodeComparor : IComparer<LinkedListNode<Data>>
+    {
+        public int Compare(LinkedListNode<Data> x, LinkedListNode<Data> y)
+        {
+            return x.Value.CompareTo(y.Value);
+        }
+    }
+
+    public class MaxStack
+    {
+        private LinkedList<Data> stack;
+
+        private SortedSet<LinkedListNode<Data>> bst;
+
+        public MaxStack()
+        {
+            this.stack = new LinkedList<Data>();
+            this.bst = new SortedSet<LinkedListNode<Data>>(new NodeComparor());
+        }
+
+        public void Push(int x)
+        {
+            this.stack.AddLast(new Data(x));
+            this.bst.Add(this.stack.Last);
+        }
+
+        public int Pop()
+        {
+            var last = this.stack.Last;
+            this.stack.RemoveLast();
+            this.bst.Remove(last);
+
+            return last.Value.val;
+        }
+
+        public int Top()
+        {
+            return this.stack.Last().val;
+        }
+
+        public int PeekMax()
+        {
+            return this.bst.Max.Value.val;
+        }
+
+        public int PopMax()
+        {
+            var max = this.bst.Max;
+            this.bst.Remove(max);
+            this.stack.Remove(max);
+
+            return max.Value.val;
+        }
+    }
+
     public class Data : IComparable<Data>
     {
         private static int counter = 0;
@@ -138,7 +193,7 @@ namespace ConsoleApp2
         }
     }
 
-    public class MaxStack
+    public class MaxStackV1
     {
         private HashSet<(int, int)> removedNode;
 
@@ -146,7 +201,7 @@ namespace ConsoleApp2
 
         private LinkedList<Data> list;
 
-        public MaxStack()
+        public MaxStackV1()
         {
             this.removedNode = new HashSet<(int, int)>();
             this.maxHeap = new MaxHeap<Data>(100000);

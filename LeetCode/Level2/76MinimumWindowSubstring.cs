@@ -8,7 +8,64 @@ namespace ConsoleApp2.Level2
 {
     public class _76MinimumWindowSubstring
     {
+        private static int GetIndex(char ch)
+        {
+            if (ch >= 'A' && ch <= 'Z')
+                return ch - 'A';
+
+            return ch - 'a' + 26;
+        }
+
         public string MinWindow(string s, string t)
+        {
+            if (s.Length < t.Length)
+                return string.Empty;
+
+            int[] tCounts = new int[52];
+            foreach(var c in t)
+            {
+                ++tCounts[GetIndex(c)];
+            }
+
+            int[] sCounts = new int[52];
+            int left = 0, right = left;
+            int minLen = int.MaxValue, minLenStart = -1;
+            int totalMatched = 0;
+            while (left <= right && right < s.Length)
+            {
+                int index = GetIndex(s[right]);
+                ++sCounts[index];
+                if (tCounts[index] != 0)
+                {
+                    if (sCounts[index] <= tCounts[index])
+                    {
+                        ++totalMatched;
+                    }
+
+                    while (totalMatched == t.Length && left <= right)
+                    {
+                        if (minLen > right - left + 1)
+                        {
+                            minLen = right - left + 1;
+                            minLenStart = left;
+                        }
+
+                        int leftIndex = GetIndex(s[left]);
+                        --sCounts[leftIndex];
+                        if (tCounts[leftIndex] > sCounts[leftIndex])
+                            --totalMatched;
+
+                        ++left;
+                    }
+                }
+
+                ++right;
+            }
+
+            return minLenStart != -1 ? s.Substring(minLenStart, minLen) : string.Empty;
+        }
+
+        public string MinWindowV1(string s, string t)
         {
             if (t.Length > s.Length)
                 return string.Empty;
@@ -216,7 +273,6 @@ namespace ConsoleApp2.Level2
                 }
                 else
                 {
-
                     char sCh = s[right];
                     if (tCounts[sCh - 'A'] > 0)
                     {

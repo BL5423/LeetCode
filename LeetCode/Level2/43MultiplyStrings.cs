@@ -10,6 +10,42 @@ namespace ConsoleApp2.Level2
     {
         public string Multiply(string num1, string num2)
         {
+            if (num1 == "0" || num2 == "0")
+                return "0";
+
+            if (num2.Length > num1.Length)
+                return Multiply(num2, num1);
+
+            int[] res = new int[num1.Length + num2.Length];
+            for (int i = num2.Length - 1; i >= 0; --i)
+            {
+                int n2 = num2[i] - '0', index = res.Length - 1 - (num2.Length - 1 - i);
+                for (int j = num1.Length - 1; j >= 0; --j)
+                {
+                    int n1 = num1[j] - '0';
+                    res[index] += n1 * n2;
+                    if (res[index] > 9)
+                    {
+                        res[index - 1] += res[index] / 10;
+                        res[index] %= 10;
+                    }
+
+                    --index;
+                }
+            }
+
+            int k = 0;
+            while (res[k] == 0)
+                ++k;
+
+            LinkedList<char> buffer = new LinkedList<char>();
+            while (k < res.Length)
+                buffer.AddLast((char)(res[k++] + '0'));
+            return string.Join("", buffer);
+        }
+
+        public string MultiplyV1(string num1, string num2)
+        {
             // make sure num2 is shorter than num1
             if (num1.Length < num2.Length)
                 return Multiply(num2, num1);
