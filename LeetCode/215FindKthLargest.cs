@@ -8,6 +8,70 @@ namespace ConsoleApp2
 {
     public class _215FindKthLargest
     {
+        public int FindKthLargest(int[] nums, int k)
+        {
+            return Find(nums, 0, nums.Length - 1, nums.Length - k);
+        }
+
+        private int Find(int[] nums, int start, int end, int targetIndex)
+        {
+            while (true)
+            {
+                int left = start, right = end;
+                //int pivotIndex = (start + end) / 2;
+                int pivotIndex = Random.Shared.Next(left, right + 1);
+                int pivot = nums[pivotIndex];
+
+                // swap
+                int temp = nums[right];
+                nums[right] = nums[pivotIndex];
+                nums[pivotIndex] = temp;
+                pivotIndex = right;
+                --right;
+
+                // partition by pivot
+                while (left <= right)
+                {
+                    if (nums[left] <= pivot)
+                    {
+                        ++left;
+                    }
+                    else // nums[left] > pivot
+                    {
+                        temp = nums[left];
+                        nums[left] = nums[right];
+                        nums[right--] = temp;
+                    }
+                }
+
+                // left > right
+                // restore
+                temp = nums[left];
+                nums[left] = pivot;
+                nums[pivotIndex] = temp;
+
+                pivotIndex = left;
+                if (pivotIndex == targetIndex)
+                    return pivot;
+                else if (pivotIndex > targetIndex)
+                //return Find(nums, start, pivotIndex - 1, targetIndex);
+                {
+                    end = pivotIndex - 1;
+                    while (end - 1 > targetIndex && nums[end] == nums[end - 1] && end > start && nums[end - 1] >= pivot)
+                        --end;
+                }
+                else // pivotIndex < targetIndex
+                     //return Find(nums, pivotIndex + 1, end, targetIndex);
+                {
+                    start = pivotIndex + 1;
+                    while (start + 1 < targetIndex && nums[start] == nums[start + 1] && end > start && nums[start + 1] <= pivot) // skip dup numbers while maintaining the condition, especially any number on the left of pivot should be equal to or smaller than pivot
+                        ++start;
+                }
+            }
+
+            return -1;
+        }
+
         public int FindKthLargestCountSorting(int[] nums, int k)
         {
             int max = int.MinValue, min = int.MaxValue;
@@ -79,7 +143,7 @@ namespace ConsoleApp2
             return -1;
         }
 
-        public int FindKthLargest(int[] nums, int k)
+        public int FindKthLargestV5(int[] nums, int k)
         {
             int pivotIndex = -1, start = 0, end = nums.Length - 1;
             while (pivotIndex != k - 1)

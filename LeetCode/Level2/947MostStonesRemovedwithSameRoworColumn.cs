@@ -30,7 +30,7 @@ namespace ConsoleApp2.Level2
     //The inverse Ackermann function grows extraordinarily slowly, so this factor is 4 or less for any n that can actually be written in the physical universe.This makes disjoint-set operations practically amortized constant time.
     public class _947MostStonesRemovedwithSameRoworColumnV3
     {
-        private int islands;
+        private int totalCoordinates;
 
         private Dictionary<int, int> parents;
 
@@ -38,7 +38,7 @@ namespace ConsoleApp2.Level2
         {
             if (!this.parents.TryGetValue(index, out int parent))
             {
-                ++this.islands;
+                ++this.totalCoordinates;
                 this.parents[index] = parent = index;
             }
 
@@ -59,13 +59,13 @@ namespace ConsoleApp2.Level2
             if (parent1 != parent2)
             {
                 this.parents[parent1] = parent2;
-                --this.islands;
+                --this.totalCoordinates;
             }
         }
 
         public int RemoveStones(int[][] stones)
         {
-            this.islands = 0;
+            this.totalCoordinates = 0;
             this.parents = new Dictionary<int, int>(stones.Length);
             foreach(var stone in stones)
             {
@@ -73,7 +73,7 @@ namespace ConsoleApp2.Level2
                 this.Union(stone[0], ~stone[1]);
             }
 
-            return stones.Length - this.islands;
+            return stones.Length - this.totalCoordinates;
         }
     }
 

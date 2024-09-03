@@ -8,6 +8,55 @@ namespace LC.Level3
 {
     public class _31NextPermutation
     {
+        public void NextPermutation(int[] nums)
+        {
+            bool found = false;
+            for (int i = nums.Length - 2; !found && i >= 0; --i)
+            {
+                if (nums[i] < nums[i + 1])
+                {
+                    // binary search to find the minimal num after i that is larger than i
+                    int j = BinarySearch(nums, nums[i], i + 1, nums.Length - 1);
+
+                    // swap
+                    int temp = nums[j];
+                    nums[j] = nums[i];
+                    nums[i] = temp;
+
+                    Array.Reverse(nums, i + 1, nums.Length - 1 - i);
+                    //Array.Sort(nums, i + 1, nums.Length - i - 1);
+
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                Array.Reverse(nums);
+            }
+        }
+
+        private int BinarySearch(int[] nums, int target, int start, int end)
+        {
+            int index = end;
+            while (start <= end)
+            {
+                int mid = start + (end - start) / 2;
+                if (nums[mid] <= target)
+                {
+                    end = mid - 1;
+                }
+                else // nums[mid] > target
+                {
+                    index = mid;
+                    start = mid + 1;
+                }
+            }
+
+            // start > end
+            return index;
+        }
+
         public void NextPermutationV3(int[] nums)
         {
             int index = nums.Length - 1;

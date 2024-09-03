@@ -6,6 +6,53 @@ using System.Threading.Tasks;
 
 namespace LC.Level3
 {
+    public class _528RandomPickwithWeight
+    {
+        private int sum;
+
+        private int[][] ranges;
+
+        public _528RandomPickwithWeight(int[] w)
+        {
+            int[] indices = new int[w.Length];
+            this.ranges = new int[w.Length][];
+            for (int i = 0; i < w.Length; ++i)
+            {
+                this.sum += w[i];
+                indices[i] = i;
+            }
+
+            Array.Sort(indices, (a, b) => w[a] - w[b]);
+            int weightSoFar = 0;
+            for (int i = 0; i < indices.Length; ++i)
+            {
+                this.ranges[i] = new int[3];
+                this.ranges[i][0] = indices[i];
+                this.ranges[i][1] = weightSoFar;
+                weightSoFar += w[indices[i]];
+                this.ranges[i][2] = weightSoFar;
+            }
+        }
+
+        public int PickIndex()
+        {
+            double pickedValue = new Random().NextDouble() * this.sum;
+            for (int i = 0; i < this.ranges.Length; ++i)
+            {
+                if (this.ranges[i][1] <= pickedValue && pickedValue <= this.ranges[i][2])
+                    return this.ranges[i][0];
+            }
+
+            return -1;
+        }
+    }
+
+    /**
+     * Your Solution object will be instantiated and called as such:
+     * Solution obj = new Solution(w);
+     * int param_1 = obj.PickIndex();
+     */
+
     public class Solution
     {
         private int[] range;
